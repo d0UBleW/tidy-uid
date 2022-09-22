@@ -1,0 +1,106 @@
+---
+- name: Provision
+  become: true
+  gather_facts: false
+  hosts: all
+  # vars:
+  #   ansible_python_interpreter: /usr/bin/python3
+  tasks:
+    - name: Say Hello
+      debug:
+        msg: Hello Ansible
+
+    - name: Bootstrap install python
+      ansible.builtin.raw: apk add -U python3 py3-pip
+
+    - name: Gather facts
+      setup:
+
+    - name: Install usermod
+      apk:
+        name: shadow
+        update_cache: yes
+
+    - name: Add user in alpine-01
+      delegate_to: alpine-01
+      run_once: true
+      ansible.builtin.user:
+        name: zero
+        uid: 1100
+
+    - name: Add user in alpine-01
+      delegate_to: alpine-01
+      run_once: true
+      ansible.builtin.user:
+        name: one
+        uid: 1101
+
+    - name: Add user in alpine-01
+      delegate_to: alpine-01
+      run_once: true
+      ansible.builtin.user:
+        name: two
+        uid: 1102
+
+    - name: Add user in alpine-01
+      delegate_to: alpine-01
+      run_once: true
+      ansible.builtin.user:
+        name: three
+        uid: 1103
+
+    - name: Add user in alpine-02
+      delegate_to: alpine-02
+      run_once: true
+      ansible.builtin.user:
+        name: zero
+        uid: 1200
+
+    - name: Add user in alpine-02
+      delegate_to: alpine-02
+      run_once: true
+      ansible.builtin.user:
+        name: one
+        uid: 1201
+
+    - name: Add user in alpine-02
+      delegate_to: alpine-02
+      run_once: true
+      ansible.builtin.user:
+        name: two
+        uid: 1202
+
+    - name: Add user in alpine-02
+      delegate_to: alpine-02
+      run_once: true
+      ansible.builtin.user:
+        name: three
+        uid: 1203
+
+    - name: Add user in alpine-03
+      delegate_to: alpine-03
+      run_once: true
+      ansible.builtin.user:
+        name: zero
+        uid: 1300
+
+    - name: Add user in alpine-03
+      delegate_to: alpine-03
+      run_once: true
+      ansible.builtin.user:
+        name: one
+        uid: 1301
+
+    - name: Add user in alpine-03
+      delegate_to: alpine-03
+      run_once: true
+      ansible.builtin.user:
+        name: two
+        uid: 1302
+
+    - name: Add user in alpine-03
+      delegate_to: alpine-03
+      run_once: true
+      ansible.builtin.user:
+        name: three
+        uid: 1303

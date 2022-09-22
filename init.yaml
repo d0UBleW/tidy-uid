@@ -1,0 +1,12 @@
+---
+- name: Init Provision
+  become: true
+  gather_facts: false
+  hosts: all
+  tasks:
+    - name: Hello World
+      debug:
+        msg: Hello, World!
+
+    - name: Test ping
+      ansible.builtin.raw: ping -c4 1.1.1.1
