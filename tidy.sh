@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# TODO: POSIX compliant (array, awk=>cut)
+
 SSH_OPTS="-f -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null"
 
 IP=($(cat ./ip.txt | cut -d" " -f1))
