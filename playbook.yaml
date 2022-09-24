@@ -33,7 +33,7 @@
       run_once: true
       ansible.builtin.user:
         name: one
-        uid: 1101
+        uid: 1302
 
     - name: Add user in alpine-01
       delegate_to: alpine-01
@@ -61,7 +61,7 @@
       run_once: true
       ansible.builtin.user:
         name: one
-        uid: 1201
+        uid: 1302
 
     - name: Add user in alpine-02
       delegate_to: alpine-02
