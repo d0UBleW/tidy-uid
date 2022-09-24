@@ -2,7 +2,7 @@
 
 # TODO: POSIX compliant (array, awk=>cut)
 
-SSH_OPTS="-f -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null"
+SSH_OPTS="-o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null"
 
 IP=($(cat ./ip.txt | cut -d" " -f1))
 PEM=($(cat ./ip.txt | cut -d" " -f2))
@@ -29,7 +29,8 @@ do
 
         ssh ${SSH_OPTS} -i ${PEM[$i]} vagrant@${IP[$i]} \
             "sudo usermod -u ${BASE_UID} ${USERNAME}; \
-            sudo find /tmp -uid ${REMOTE_OLD_UID} -exec chown -h ${BASE_UID} {} \;"
+            sudo find /tmp -uid ${REMOTE_OLD_UID} \
+            -exec chown -h ${BASE_UID} {} \;" < /dev/null
 
         # TODO: need to reconfigure SUID/SGID after chown
         # TODO: change GID and create if not exist
