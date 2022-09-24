@@ -82,14 +82,14 @@
       run_once: true
       ansible.builtin.user:
         name: zero
-        uid: 1300
+        uid: 1100
 
     - name: Add user in alpine-03
       delegate_to: alpine-03
       run_once: true
       ansible.builtin.user:
         name: one
-        uid: 1301
+        uid: 1201
 
     - name: Add user in alpine-03
       delegate_to: alpine-03
@@ -103,4 +103,72 @@
       run_once: true
       ansible.builtin.user:
         name: three
-        uid: 1303
+        uid: 1103
+
+    - name: Create empty file
+      tags: gen
+      ansible.builtin.file:
+        path: "/tmp/zero"
+        state: touch
+        owner: zero
+        group: zero
+
+    - name: Create empty file
+      tags: gen
+      ansible.builtin.file:
+        path: "/tmp/one"
+        state: touch
+        owner: one
+        group: one
+
+    - name: Create empty file
+      tags: gen
+      ansible.builtin.file:
+        path: "/tmp/two"
+        state: touch
+        owner: two
+        group: two
+
+    - name: Create empty file
+      tags: gen
+      ansible.builtin.file:
+        path: "/tmp/three"
+        state: touch
+        owner: three
+        group: three
+
+    - name: Create empty SUID file
+      tags: gen
+      ansible.builtin.file:
+        path: "/tmp/zero-suid"
+        state: touch
+        mode: "4777"
+        owner: zero
+        group: zero
+
+    - name: Create empty file SUID file
+      tags: gen
+      ansible.builtin.file:
+        path: "/tmp/one-suid"
+        state: touch
+        mode: "4777"
+        owner: one
+        group: one
+
+    - name: Create empty file SUID file
+      tags: gen
+      ansible.builtin.file:
+        path: "/tmp/two-suid"
+        state: touch
+        mode: "4777"
+        owner: two
+        group: two
+
+    - name: Create empty file SUID file
+      tags: gen
+      ansible.builtin.file:
+        path: "/tmp/three-suid"
+        state: touch
+        mode: "4777"
+        owner: three
+        group: three
