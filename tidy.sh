@@ -53,6 +53,10 @@ ${USERNAMES}
 EOFABC
 
 BASE=$(echo "${BASE}" | grep -ve "^$")
+DUP=$(echo "${BASE}" | cut -d ":" -f 2,3 | sort | uniq -c | sort -rnk 1 | \
+    grep -vPe "^\s+1\s" | awk '{print $NF}')
+
+echo "${BASE}" | grep "${DUP}"
 
 echo "${BASE}" > base.txt
 
@@ -101,8 +105,6 @@ EOFCBA
     echo "[+] Master ssh process successfully stopped"
     echo
 done < ./ip.txt
-
-
 
 # echo
 # while read -r LINE; do
