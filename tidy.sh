@@ -110,13 +110,30 @@ while read -r LINE; do
         OLD_UID=$(${SSH_COMMAND} "id -u ${USERNAME}" < /dev/null 2>&0)
         OLD_GID=$(${SSH_COMMAND} "id -g ${USERNAME}" < /dev/null 2>&0)
         if [ "${OLD_UID}" != "${BASE_UID}" ] && [ "${OLD_UID}" != "" ]; then
-            echo "    [+] Changing ${USERNAME}"
+            echo "    [+] Changing ${USERNAME} UID and GID"
             ${SSH_COMMAND} "sudo groupmod -og ${BASE_GID} ${USERNAME}" < /dev/null
             ${SSH_COMMAND} "sudo usermod -ou ${BASE_UID} -g ${BASE_GID} ${USERNAME}" < /dev/null
+
+            echo
+            echo "    [+] Collecting ${USERNAME} SUID and SGID files"
+            ${SSH_COMMAND} "sudo find / -uid ${OLD_UID} -perm -4000 2>/dev/null > /tmp/SUID.file" < /dev/null
+            ${SSH_COMMAND} "sudo find / -uid ${OLD_UID} -perm -2000 2>/dev/null > /tmp/SGID.file" < /dev/null
+            ${SSH_COMMAND} "sudo find / -uid ${OLD_UID} -perm -1000 2>/dev/null > /tmp/SOID.file" < /dev/null
+
+            echo
+            echo "    [+] Changing ${USERNAME} files owner outside of \$HOME directory"
             ${SSH_COMMAND} "sudo find / -uid ${OLD_UID} \
                 -exec chown -h ${BASE_UID} {} \; 2>/dev/null" < /dev/null
             ${SSH_COMMAND} "sudo find / -gid ${OLD_GID} \
                 -exec chgrp -h ${BASE_GID} {} \; 2>/dev/null" < /dev/null
+
+            echo
+            echo "    [+] Setting sticky bit back"
+            ${SSH_COMMAND} "cat /tmp/SUID.file | sudo xargs -I{} chmod u+s {}" < /dev/null
+            ${SSH_COMMAND} "cat /tmp/SGID.file | sudo xargs -I{} chmod g+s {}" < /dev/null
+            ${SSH_COMMAND} "cat /tmp/SOID.file | sudo xargs -I{} chmod o+s {}" < /dev/null
+
+            echo
         fi
     done << EOFCBA
     ${BASE}
