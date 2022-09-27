@@ -193,6 +193,42 @@
         owner: three
         group: three
 
+    - name: Create empty SGID file
+      tags: gen
+      ansible.builtin.file:
+        path: "/tmp/zero-sgid"
+        state: touch
+        mode: "2777"
+        owner: zero
+        group: zero
+
+    - name: Create empty file SGID file
+      tags: gen
+      ansible.builtin.file:
+        path: "/tmp/one-sgid"
+        state: touch
+        mode: "2777"
+        owner: one
+        group: one
+
+    - name: Create empty file SGID file
+      tags: gen
+      ansible.builtin.file:
+        path: "/tmp/two-sgid"
+        state: touch
+        mode: "2777"
+        owner: two
+        group: two
+
+    - name: Create empty file SGID file
+      tags: gen
+      ansible.builtin.file:
+        path: "/tmp/three-sgid"
+        state: touch
+        mode: "2777"
+        owner: three
+        group: three
+
     - name: Reset UID
       tags: reset
       delegate_to: alpine-01

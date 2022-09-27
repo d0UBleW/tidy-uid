@@ -110,7 +110,7 @@ while read -r LINE; do
         OLD_UID=$(${SSH_COMMAND} "id -u ${USERNAME}" < /dev/null 2>&0)
         OLD_GID=$(${SSH_COMMAND} "id -g ${USERNAME}" < /dev/null 2>&0)
         if [ "${OLD_UID}" != "${BASE_UID}" ] && [ "${OLD_UID}" != "" ]; then
-            echo "    [+] Changing ${USERNAME} UID and GID"
+            echo "    [+] Changing ${USERNAME} UID and GID from ${OLD_UID} to ${BASE_UID}"
             ${SSH_COMMAND} "sudo groupmod -og ${BASE_GID} ${USERNAME}" < /dev/null
             ${SSH_COMMAND} "sudo usermod -ou ${BASE_UID} -g ${BASE_GID} ${USERNAME}" < /dev/null
 
