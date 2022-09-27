@@ -22,7 +22,6 @@
         update_cache: yes
 
     - name: Add user in alpine-01
-      tags: reset
       delegate_to: alpine-01
       run_once: true
       ansible.builtin.user:
@@ -31,7 +30,6 @@
         non_unique: true
 
     - name: Add user in alpine-01
-      tags: reset
       delegate_to: alpine-01
       run_once: true
       ansible.builtin.user:
@@ -40,7 +38,6 @@
         non_unique: true
 
     - name: Add user in alpine-01
-      tags: reset
       delegate_to: alpine-01
       run_once: true
       ansible.builtin.user:
@@ -49,7 +46,6 @@
         non_unique: true
 
     - name: Add user in alpine-01
-      tags: reset
       delegate_to: alpine-01
       run_once: true
       ansible.builtin.user:
@@ -58,7 +54,6 @@
         non_unique: true
 
     - name: Add user in alpine-01
-      tags: reset
       delegate_to: alpine-01
       run_once: true
       ansible.builtin.user:
@@ -67,7 +62,6 @@
         non_unique: true
 
     - name: Add user in alpine-02
-      tags: reset
       delegate_to: alpine-02
       run_once: true
       ansible.builtin.user:
@@ -76,7 +70,6 @@
         non_unique: true
 
     - name: Add user in alpine-02
-      tags: reset
       delegate_to: alpine-02
       run_once: true
       ansible.builtin.user:
@@ -85,7 +78,6 @@
         non_unique: true
 
     - name: Add user in alpine-02
-      tags: reset
       delegate_to: alpine-02
       run_once: true
       ansible.builtin.user:
@@ -94,7 +86,6 @@
         non_unique: true
 
     - name: Add user in alpine-02
-      tags: reset
       delegate_to: alpine-02
       run_once: true
       ansible.builtin.user:
@@ -103,7 +94,6 @@
         non_unique: true
 
     - name: Add user in alpine-03
-      tags: reset
       delegate_to: alpine-03
       run_once: true
       ansible.builtin.user:
@@ -112,7 +102,6 @@
         non_unique: true
 
     - name: Add user in alpine-03
-      tags: reset
       delegate_to: alpine-03
       run_once: true
       ansible.builtin.user:
@@ -121,7 +110,6 @@
         non_unique: true
 
     - name: Add user in alpine-03
-      tags: reset
       delegate_to: alpine-03
       run_once: true
       ansible.builtin.user:
@@ -130,7 +118,6 @@
         non_unique: true
 
     - name: Add user in alpine-03
-      tags: reset
       delegate_to: alpine-03
       run_once: true
       ansible.builtin.user:
@@ -205,3 +192,81 @@
         mode: "4777"
         owner: three
         group: three
+
+    - name: Reset UID
+      tags: reset
+      delegate_to: alpine-01
+      run_once: true
+      ansible.builtin.shell: "groupmod -og 1900 unique && usermod -ou 1900 -g 1900 unique"
+
+    - name: Reset UID
+      tags: reset
+      delegate_to: alpine-01
+      run_once: true
+      ansible.builtin.shell: "groupmod -og 1100 zero && usermod -ou 1100 -g 1100 zero"
+
+    - name: Reset UID
+      tags: reset
+      delegate_to: alpine-01
+      run_once: true
+      ansible.builtin.shell: "groupmod -og 1302 one && usermod -ou 1302 -g 1302 one"
+
+    - name: Reset UID
+      tags: reset
+      delegate_to: alpine-01
+      run_once: true
+      ansible.builtin.shell: "groupmod -og 1102 two && usermod -ou 1102 -g 1102 two"
+
+    - name: Reset UID
+      tags: reset
+      delegate_to: alpine-01
+      run_once: true
+      ansible.builtin.shell: "groupmod -og 1103 three && usermod -ou 1103 -g 1103 three"
+
+    - name: Reset UID
+      tags: reset
+      delegate_to: alpine-02
+      run_once: true
+      ansible.builtin.shell: "groupmod -og 1200 zero && usermod -ou 1200 -g 1200 zero"
+
+    - name: Reset UID
+      delegate_to: alpine-02
+      tags: reset
+      run_once: true
+      ansible.builtin.shell: "groupmod -og 1302 one && usermod -ou 1302 -g 1302 one"
+
+    - name: Reset UID
+      delegate_to: alpine-02
+      tags: reset
+      run_once: true
+      ansible.builtin.shell: "groupmod -og 1202 two && usermod -ou 1202 -g 1202 two"
+
+    - name: Reset UID
+      delegate_to: alpine-02
+      tags: reset
+      run_once: true
+      ansible.builtin.shell: "groupmod -og 1203 three && usermod -ou 1203 -g 1203 three"
+
+    - name: Reset UID
+      delegate_to: alpine-03
+      tags: reset
+      run_once: true
+      ansible.builtin.shell: "groupmod -og 1100 zero && usermod -ou 1100 -g 1100 zero"
+
+    - name: Reset UID
+      delegate_to: alpine-03
+      tags: reset
+      run_once: true
+      ansible.builtin.shell: "groupmod -og 1201 one && usermod -ou 1201 -g 1201 one"
+
+    - name: Reset UID
+      delegate_to: alpine-03
+      tags: reset
+      run_once: true
+      ansible.builtin.shell: "groupmod -og 1302 two && usermod -ou 1302 -g 1302 two"
+
+    - name: Reset UID
+      tags: reset
+      delegate_to: alpine-03
+      run_once: true
+      ansible.builtin.shell: "groupmod -og 1103 three && usermod -ou 1103 -g 1103 three"

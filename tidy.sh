@@ -53,24 +53,38 @@ ${USERNAMES}
 EOFABC
 
 BASE=$(echo "${BASE}" | grep -ve "^$")
+
 DUP=$(echo "${BASE}" | cut -d ":" -f 2,3 | sort | uniq -c | sort -rnk 1 | \
     grep -vPe "^\s+1\s" | awk '{print $NF}')
 
-echo "${BASE}" | grep "${DUP}"
+DUP_ENTRY=""
+
+while read -r LINE; do
+    N=$(echo "${BASE}" | grep "${LINE}")
+    COUNT=$(echo "${N}" | wc -l)
+    COUNT=$(( COUNT - 1 ))
+    N=$(echo "${N}" | tail -${COUNT})
+    DUP_ENTRY="${DUP_ENTRY}
+${N}"
+done << EOFDUP
+${DUP}
+EOFDUP
+
+DUP_ENTRY=$(echo "${DUP_ENTRY}" | grep -ve '^$')
 
 echo "${BASE}" > base.txt
 
 while read -r LINE; do
     NUM=1000
-    CURR=$(echo "${LINE}" | cut -d ":" -f 2,3)
-    while echo "${BASE}" | grep "${NUM}:${NUM}"; do
-        NUM=$((NUM+1))
+    IDS=$(echo "${LINE}" | cut -d ":" -f 2,3)
+    USERNAME=$(echo "${LINE}" | cut -d ":" -f1)
+    while echo "${BASE}" | grep "${NUM}:${NUM}" >/dev/null; do
+        NUM=$(( NUM+1 ))
     done
-    BASE=$(echo "${BASE}" | sed "0,/${CURR}/s//${NUM}:${NUM}/")
-done << EOFDUP
-${DUP}
-EOFDUP
-
+    BASE=$(echo "${BASE}" | sed "s/${USERNAME}:${IDS}/${USERNAME}:${NUM}:${NUM}/")
+done << EOFDUPENTRY
+${DUP_ENTRY}
+EOFDUPENTRY
 
 while read -r LINE; do
     HOST=$(echo "${LINE}" | cut -d" " -f1)
@@ -86,19 +100,19 @@ while read -r LINE; do
     echo "[+] Starting master ssh process"
     echo "[+] Error Log: ${ERR_LOG}"
     ( $SSH_COMMAND -M -f tail -f /dev/null ) 2>"${ERR_LOG}"
-    echo "    - Master ssh process successfully started"
+    echo "[+] Master ssh process successfully started"
     echo
 
     while read -r ENTRY; do
         USERNAME=$(echo "${ENTRY}" | cut -d":" -f1)
         BASE_UID=$(echo "${ENTRY}" | cut -d":" -f2)
         BASE_GID=$(echo "${ENTRY}" | cut -d":" -f3)
-        OLD_UID=$(${SSH_COMMAND} "id -u ${USERNAME}" < /dev/null)
-        OLD_GID=$(${SSH_COMMAND} "id -g ${USERNAME}" < /dev/null)
-        if [ "${OLD_UID}" != "${BASE_UID}" ] && [ -n "${OLD_UID}" ]; then
+        OLD_UID=$(${SSH_COMMAND} "id -u ${USERNAME}" < /dev/null 2>&0)
+        OLD_GID=$(${SSH_COMMAND} "id -g ${USERNAME}" < /dev/null 2>&0)
+        if [ "${OLD_UID}" != "${BASE_UID}" ] && [ "${OLD_UID}" != "" ]; then
             echo "    [+] Changing ${USERNAME}"
             ${SSH_COMMAND} "sudo groupmod -og ${BASE_GID} ${USERNAME}" < /dev/null
-            ${SSH_COMMAND} "sudo usermod -ou ${BASE_UID} ${USERNAME}" < /dev/null
+            ${SSH_COMMAND} "sudo usermod -ou ${BASE_UID} -g ${BASE_GID} ${USERNAME}" < /dev/null
             ${SSH_COMMAND} "sudo find / -uid ${OLD_UID} \
                 -exec chown -h ${BASE_UID} {} \; 2>/dev/null" < /dev/null
             ${SSH_COMMAND} "sudo find / -gid ${OLD_GID} \

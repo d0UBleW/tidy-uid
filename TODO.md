@@ -4,4 +4,5 @@
 
 [x] Fix multiple usernames with same base uid/gid
 [ ] Fix files with SUID/SGID set after changing ownership
-[ ] Check if username exists in the machine
+[x] Check if username exists in the machine
+[ ] Add alpine-04 and new user `four:1302:1302`
