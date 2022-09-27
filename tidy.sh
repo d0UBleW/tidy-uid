@@ -60,6 +60,17 @@ echo "${BASE}" | grep "${DUP}"
 
 echo "${BASE}" > base.txt
 
+while read -r LINE; do
+    NUM=1000
+    CURR=$(echo "${LINE}" | cut -d ":" -f 2,3)
+    while echo "${BASE}" | grep "${NUM}:${NUM}"; do
+        NUM=$((NUM+1))
+    done
+    BASE=$(echo "${BASE}" | sed "0,/${CURR}/s//${NUM}:${NUM}/")
+done << EOFDUP
+${DUP}
+EOFDUP
+
 
 while read -r LINE; do
     HOST=$(echo "${LINE}" | cut -d" " -f1)
@@ -68,7 +79,7 @@ while read -r LINE; do
     CONTROL_PATH="$HOME/.ssh/control-${IP}"
     ERR_LOG="/tmp/ssh.${HOST}"
     SSH_COMMAND="ssh -T -o ControlPath=${CONTROL_PATH} ${SSH_OPTS} -i ${PEM} ${HOST}" 
-    
+
     # Start master ssh process
     echo
     echo "[+] IP: ${IP}"
@@ -84,26 +95,24 @@ while read -r LINE; do
         BASE_GID=$(echo "${ENTRY}" | cut -d":" -f3)
         OLD_UID=$(${SSH_COMMAND} "id -u ${USERNAME}" < /dev/null)
         OLD_GID=$(${SSH_COMMAND} "id -g ${USERNAME}" < /dev/null)
-        if [ "${OLD_UID}" != "${BASE_UID}" ]; then
-            echo "BASE: ${BASE_UID}"
-            echo "${USERNAME}:${OLD_UID}"
+        if [ "${OLD_UID}" != "${BASE_UID}" ] && [ -n "${OLD_UID}" ]; then
             echo "    [+] Changing ${USERNAME}"
-            # ${SSH_COMMAND} "sudo groupmod -og ${BASE_GID} ${USERNAME}" < /dev/null
-            # ${SSH_COMMAND} "sudo usermod -ou ${BASE_UID} ${USERNAME}" < /dev/null
-            # ${SSH_COMMAND} "sudo find / -uid ${OLD_UID} \
-            #     -exec chown -h ${BASE_UID} {} \; 2>/dev/null" < /dev/null
-            # ${SSH_COMMAND} "sudo find / -gid ${OLD_GID} \
-            #     -exec chgrp -h ${BASE_GID} {} \; 2>/dev/null" < /dev/null
+            ${SSH_COMMAND} "sudo groupmod -og ${BASE_GID} ${USERNAME}" < /dev/null
+            ${SSH_COMMAND} "sudo usermod -ou ${BASE_UID} ${USERNAME}" < /dev/null
+            ${SSH_COMMAND} "sudo find / -uid ${OLD_UID} \
+                -exec chown -h ${BASE_UID} {} \; 2>/dev/null" < /dev/null
+            ${SSH_COMMAND} "sudo find / -gid ${OLD_GID} \
+                -exec chgrp -h ${BASE_GID} {} \; 2>/dev/null" < /dev/null
         fi
     done << EOFCBA
     ${BASE}
 EOFCBA
 
-    echo
-    echo "[+] Stopping master ssh process"
-    echo "[+] $(${SSH_COMMAND} -O exit 2>&1)"
-    echo "[+] Master ssh process successfully stopped"
-    echo
+echo
+echo "[+] Stopping master ssh process"
+echo "[+] $(${SSH_COMMAND} -O exit 2>&1)"
+echo "[+] Master ssh process successfully stopped"
+echo
 done < ./ip.txt
 
 # echo

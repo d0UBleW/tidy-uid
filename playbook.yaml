@@ -22,88 +22,121 @@
         update_cache: yes
 
     - name: Add user in alpine-01
+      tags: reset
+      delegate_to: alpine-01
+      run_once: true
+      ansible.builtin.user:
+        name: unique
+        uid: 1900
+        non_unique: true
+
+    - name: Add user in alpine-01
+      tags: reset
       delegate_to: alpine-01
       run_once: true
       ansible.builtin.user:
         name: zero
         uid: 1100
+        non_unique: true
 
     - name: Add user in alpine-01
+      tags: reset
       delegate_to: alpine-01
       run_once: true
       ansible.builtin.user:
         name: one
         uid: 1302
+        non_unique: true
 
     - name: Add user in alpine-01
+      tags: reset
       delegate_to: alpine-01
       run_once: true
       ansible.builtin.user:
         name: two
         uid: 1102
+        non_unique: true
 
     - name: Add user in alpine-01
+      tags: reset
       delegate_to: alpine-01
       run_once: true
       ansible.builtin.user:
         name: three
         uid: 1103
+        non_unique: true
 
     - name: Add user in alpine-02
+      tags: reset
       delegate_to: alpine-02
       run_once: true
       ansible.builtin.user:
         name: zero
         uid: 1200
+        non_unique: true
 
     - name: Add user in alpine-02
+      tags: reset
       delegate_to: alpine-02
       run_once: true
       ansible.builtin.user:
         name: one
         uid: 1302
+        non_unique: true
 
     - name: Add user in alpine-02
+      tags: reset
       delegate_to: alpine-02
       run_once: true
       ansible.builtin.user:
         name: two
         uid: 1202
+        non_unique: true
 
     - name: Add user in alpine-02
+      tags: reset
       delegate_to: alpine-02
       run_once: true
       ansible.builtin.user:
         name: three
         uid: 1203
+        non_unique: true
 
     - name: Add user in alpine-03
+      tags: reset
       delegate_to: alpine-03
       run_once: true
       ansible.builtin.user:
         name: zero
         uid: 1100
+        non_unique: true
 
     - name: Add user in alpine-03
+      tags: reset
       delegate_to: alpine-03
       run_once: true
       ansible.builtin.user:
         name: one
         uid: 1201
+        non_unique: true
 
     - name: Add user in alpine-03
+      tags: reset
       delegate_to: alpine-03
       run_once: true
       ansible.builtin.user:
         name: two
         uid: 1302
+        non_unique: true
 
     - name: Add user in alpine-03
+      tags: reset
       delegate_to: alpine-03
       run_once: true
       ansible.builtin.user:
         name: three
         uid: 1103
+        non_unique: true
 
     - name: Create empty file
       tags: gen
