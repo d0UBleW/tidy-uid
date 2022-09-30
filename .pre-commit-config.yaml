@@ -20,6 +20,13 @@ repos:
       - id: shfmt
 
   - repo: https://github.com/ansible-community/ansible-lint
-    rev: v6.7.0
+    rev: v6.8.0a0
     hooks:
       - id: ansible-lint
+
+  - repo: https://github.com/commitizen-tools/commitizen
+    rev: v2.35.0
+    hooks:
+      - id: commitizen
+      - id: commitizen-branch
+        stages: [push]
