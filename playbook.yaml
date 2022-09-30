@@ -7,20 +7,54 @@
   #   ansible_python_interpreter: /usr/bin/python3
   tasks:
     - name: Say Hello
-      debug:
+      ansible.builtin.debug:
         msg: Hello Ansible
 
     - name: Bootstrap install python
       ansible.builtin.raw: apk add -U python3 py3-pip
+      register: out
+      changed_when: "'Installing' in out.stdout"
 
     - name: Gather facts
-      setup:
+      ansible.builtin.setup:
 
     - name: Install usermod
-      apk:
+      community.general.apk:
         name: shadow
-        update_cache: yes
+        update_cache: true
 
+- name: Alpine 4
+  become: true
+  gather_facts: true
+  hosts: alpine-04
+  tasks:
+    - name: Add user in alpine-04
+      ansible.builtin.user:
+        name: four
+        uid: 1302
+        non_unique: true
+
+    - name: Create empty file
+      tags: gen
+      ansible.builtin.file:
+        path: "/tmp/four"
+        state: touch
+        mode: "0777"
+        owner: four
+        group: four
+
+    - name: Reset UID four in alpine-04
+      tags: reset
+      run_once: true
+      ansible.builtin.shell: "groupmod -og 1302 four && usermod -ou 1302 -g 1302 four"
+      register: out
+      changed_when: "'usermod: no changes' not in out.stderr"
+
+- name: Alpine 1-3
+  become: true
+  gather_facts: true
+  hosts: alpine-01,alpine-02,alpine-03
+  tasks:
     - name: Add user in alpine-01
       delegate_to: alpine-01
       run_once: true
@@ -130,14 +164,17 @@
       ansible.builtin.file:
         path: "/tmp/zero"
         state: touch
+        mode: "777"
         owner: zero
         group: zero
+      when: ansible_hostname != ""
 
     - name: Create empty file
       tags: gen
       ansible.builtin.file:
         path: "/tmp/one"
         state: touch
+        mode: "777"
         owner: one
         group: one
 
@@ -146,6 +183,7 @@
       ansible.builtin.file:
         path: "/tmp/two"
         state: touch
+        mode: "777"
         owner: two
         group: two
 
@@ -154,6 +192,7 @@
       ansible.builtin.file:
         path: "/tmp/three"
         state: touch
+        mode: "777"
         owner: three
         group: three
 
@@ -229,80 +268,106 @@
         owner: three
         group: three
 
-    - name: Reset UID
+    - name: Reset UID unique in alpine-01
       tags: reset
       delegate_to: alpine-01
       run_once: true
       ansible.builtin.shell: "groupmod -og 1900 unique && usermod -ou 1900 -g 1900 unique"
+      register: out
+      changed_when: "'usermod: no changes' not in out.stderr"
 
-    - name: Reset UID
+    - name: Reset UID zero in alpine-01
       tags: reset
       delegate_to: alpine-01
       run_once: true
       ansible.builtin.shell: "groupmod -og 1100 zero && usermod -ou 1100 -g 1100 zero"
+      register: out
+      changed_when: "'usermod: no changes' not in out.stderr"
 
-    - name: Reset UID
+    - name: Reset UID one in alpine-01
       tags: reset
       delegate_to: alpine-01
       run_once: true
       ansible.builtin.shell: "groupmod -og 1302 one && usermod -ou 1302 -g 1302 one"
+      register: out
+      changed_when: "'usermod: no changes' not in out.stderr"
 
-    - name: Reset UID
+    - name: Reset UID two in alpine-01
       tags: reset
       delegate_to: alpine-01
       run_once: true
       ansible.builtin.shell: "groupmod -og 1102 two && usermod -ou 1102 -g 1102 two"
+      register: out
+      changed_when: "'usermod: no changes' not in out.stderr"
 
-    - name: Reset UID
+    - name: Reset UID three in alpine-01
       tags: reset
       delegate_to: alpine-01
       run_once: true
       ansible.builtin.shell: "groupmod -og 1103 three && usermod -ou 1103 -g 1103 three"
+      register: out
+      changed_when: "'usermod: no changes' not in out.stderr"
 
-    - name: Reset UID
+    - name: Reset UID zero in alpine-02
       tags: reset
       delegate_to: alpine-02
       run_once: true
       ansible.builtin.shell: "groupmod -og 1200 zero && usermod -ou 1200 -g 1200 zero"
+      register: out
+      changed_when: "'usermod: no changes' not in out.stderr"
 
-    - name: Reset UID
+    - name: Reset UID one in alpine-02
       delegate_to: alpine-02
       tags: reset
       run_once: true
       ansible.builtin.shell: "groupmod -og 1302 one && usermod -ou 1302 -g 1302 one"
+      register: out
+      changed_when: "'usermod: no changes' not in out.stderr"
 
-    - name: Reset UID
+    - name: Reset UID two in alpine-02
       delegate_to: alpine-02
       tags: reset
       run_once: true
       ansible.builtin.shell: "groupmod -og 1202 two && usermod -ou 1202 -g 1202 two"
+      register: out
+      changed_when: "'usermod: no changes' not in out.stderr"
 
-    - name: Reset UID
+    - name: Reset UID three in alpine-02
       delegate_to: alpine-02
       tags: reset
       run_once: true
       ansible.builtin.shell: "groupmod -og 1203 three && usermod -ou 1203 -g 1203 three"
+      register: out
+      changed_when: "'usermod: no changes' not in out.stderr"
 
-    - name: Reset UID
+    - name: Reset UID zero in alpine-03
       delegate_to: alpine-03
       tags: reset
       run_once: true
       ansible.builtin.shell: "groupmod -og 1100 zero && usermod -ou 1100 -g 1100 zero"
+      register: out
+      changed_when: "'usermod: no changes' not in out.stderr"
 
-    - name: Reset UID
+    - name: Reset UID one in alpine-03
       delegate_to: alpine-03
       tags: reset
       run_once: true
       ansible.builtin.shell: "groupmod -og 1201 one && usermod -ou 1201 -g 1201 one"
+      register: out
+      changed_when: "'usermod: no changes' not in out.stderr"
 
-    - name: Reset UID
+    - name: Reset UID two in alpine-03
       delegate_to: alpine-03
       tags: reset
       run_once: true
       ansible.builtin.shell: "groupmod -og 1302 two && usermod -ou 1302 -g 1302 two"
+      register: out
+      changed_when: "'usermod: no changes' not in out.stderr"
 
-    - name: Reset UID
+    - name: Reset UID three in alpine-03
       tags: reset
       delegate_to: alpine-03
       run_once: true
       ansible.builtin.shell: "groupmod -og 1103 three && usermod -ou 1103 -g 1103 three"
+      register: out
+      changed_when: "'usermod: no changes' not in out.stderr"

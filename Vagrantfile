@@ -22,6 +22,14 @@ servers = [
     ram: 512,
     cpu: 1,
     provision: 'init.yaml'
+  },
+  {
+    hostname: 'alpine-04',
+    ip: '192.168.56.204',
+    box: 'generic/alpine38',
+    ram: 512,
+    cpu: 1,
+    provision: 'init.yaml'
   }
 ]
 
