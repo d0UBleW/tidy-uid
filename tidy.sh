@@ -1,8 +1,5 @@
 #!/bin/sh
 
-# TODO: Only use master ssh when changing UID
-
-
 SSH_OPTS="-o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null"
 
 truncate --no-create --size 0 /tmp/tidy-uid.log
@@ -98,9 +95,9 @@ EOFDUP
 
 DUP_ENTRY=$(echo "${DUP_ENTRY}" | grep -ve '^$')
 
+NUM=1000
 while read -r LINE; do
     [ -z "${LINE}" ] && break
-    NUM=1000
     IDS=$(echo "${LINE}" | cut -d ":" -f 2,3)
     USERNAME=$(echo "${LINE}" | cut -d ":" -f1)
     while echo "${BASE}" | grep "${NUM}:${NUM}" >/dev/null; do
