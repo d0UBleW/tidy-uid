@@ -184,102 +184,64 @@
       tags: reset
       delegate_to: alpine-01
       run_once: true
-      ansible.builtin.shell: "groupmod -og 1900 unique && usermod -ou 1900 -g 1900 unique"
+      ansible.builtin.shell: "groupmod -og {{ item.gid }} {{ item.name }} && usermod -ou {{ item.uid }} -g {{ item.gid }} {{ name }}"
       register: out
       changed_when: "'usermod: no changes' not in out.stderr"
-
-    - name: Reset UID zero in alpine-01
-      tags: reset
-      delegate_to: alpine-01
-      run_once: true
-      ansible.builtin.shell: "groupmod -og 1100 zero && usermod -ou 1100 -g 1100 zero"
-      register: out
-      changed_when: "'usermod: no changes' not in out.stderr"
-
-    - name: Reset UID one in alpine-01
-      tags: reset
-      delegate_to: alpine-01
-      run_once: true
-      ansible.builtin.shell: "groupmod -og 1302 one && usermod -ou 1302 -g 1302 one"
-      register: out
-      changed_when: "'usermod: no changes' not in out.stderr"
-
-    - name: Reset UID two in alpine-01
-      tags: reset
-      delegate_to: alpine-01
-      run_once: true
-      ansible.builtin.shell: "groupmod -og 1102 two && usermod -ou 1102 -g 1102 two"
-      register: out
-      changed_when: "'usermod: no changes' not in out.stderr"
-
-    - name: Reset UID three in alpine-01
-      tags: reset
-      delegate_to: alpine-01
-      run_once: true
-      ansible.builtin.shell: "groupmod -og 1103 three && usermod -ou 1103 -g 1103 three"
-      register: out
-      changed_when: "'usermod: no changes' not in out.stderr"
-
-    - name: Reset UID zero in alpine-02
+      loop:
+        - name: unique
+          uid: 1900
+          gid: 1900
+        - name: zero
+          uid: 1100
+          gid: 1100
+        - name: one
+          uid: 1302
+          gid: 1302
+        - name: two
+          uid: 1102
+          gid: 1102
+        - name: three
+          uid: 1103
+          gid: 1103
+          
+    - name: Reset UID unique in alpine-02
       tags: reset
       delegate_to: alpine-02
       run_once: true
-      ansible.builtin.shell: "groupmod -og 1200 zero && usermod -ou 1200 -g 1200 zero"
+      ansible.builtin.shell: "groupmod -og {{ item.gid }} {{ item.name }} && usermod -ou {{ item.uid }} -g {{ item.gid }} {{ name }}"
       register: out
       changed_when: "'usermod: no changes' not in out.stderr"
-
-    - name: Reset UID one in alpine-02
-      delegate_to: alpine-02
-      tags: reset
-      run_once: true
-      ansible.builtin.shell: "groupmod -og 1302 one && usermod -ou 1302 -g 1302 one"
-      register: out
-      changed_when: "'usermod: no changes' not in out.stderr"
-
-    - name: Reset UID two in alpine-02
-      delegate_to: alpine-02
-      tags: reset
-      run_once: true
-      ansible.builtin.shell: "groupmod -og 1202 two && usermod -ou 1202 -g 1202 two"
-      register: out
-      changed_when: "'usermod: no changes' not in out.stderr"
-
-    - name: Reset UID three in alpine-02
-      delegate_to: alpine-02
-      tags: reset
-      run_once: true
-      ansible.builtin.shell: "groupmod -og 1203 three && usermod -ou 1203 -g 1203 three"
-      register: out
-      changed_when: "'usermod: no changes' not in out.stderr"
-
-    - name: Reset UID zero in alpine-03
-      delegate_to: alpine-03
-      tags: reset
-      run_once: true
-      ansible.builtin.shell: "groupmod -og 1100 zero && usermod -ou 1100 -g 1100 zero"
-      register: out
-      changed_when: "'usermod: no changes' not in out.stderr"
-
-    - name: Reset UID one in alpine-03
-      delegate_to: alpine-03
-      tags: reset
-      run_once: true
-      ansible.builtin.shell: "groupmod -og 1201 one && usermod -ou 1201 -g 1201 one"
-      register: out
-      changed_when: "'usermod: no changes' not in out.stderr"
-
-    - name: Reset UID two in alpine-03
-      delegate_to: alpine-03
-      tags: reset
-      run_once: true
-      ansible.builtin.shell: "groupmod -og 1302 two && usermod -ou 1302 -g 1302 two"
-      register: out
-      changed_when: "'usermod: no changes' not in out.stderr"
-
-    - name: Reset UID three in alpine-03
+      loop:
+        - name: zero
+          uid: 1200
+          gid: 1200
+        - name: one
+          uid: 1302
+          gid: 1302
+        - name: two
+          uid: 1202
+          gid: 1202
+        - name: three
+          uid: 1203
+          gid: 1203
+    
+    - name: Reset UID unique in alpine-03
       tags: reset
       delegate_to: alpine-03
       run_once: true
-      ansible.builtin.shell: "groupmod -og 1103 three && usermod -ou 1103 -g 1103 three"
+      ansible.builtin.shell: "groupmod -og {{ item.gid }} {{ item.name }} && usermod -ou {{ item.uid }} -g {{ item.gid }} {{ name }}"
       register: out
       changed_when: "'usermod: no changes' not in out.stderr"
+      loop:
+        - name: zero
+          uid: 1300
+          gid: 1300
+        - name: one
+          uid: 1201
+          gid: 1201
+        - name: two
+          uid: 1302
+          gid: 1302
+        - name: three
+          uid: 1103
+          gid: 1103
